@@ -4,6 +4,7 @@
 #include <vector>
 #include <random>
 #include <chrono>
+#include <iomanip>
 
 int main() {
     try {
@@ -45,9 +46,9 @@ extern "C" __global__ void vector_add(float* a, float* b, float* c, int n) {
 
         // Allocate device memory
         float *d_a, *d_b, *d_c;
-        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(&d_a, size));
-        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(&d_b, size));
-        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(&d_c, size));
+        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(reinterpret_cast<void**>(&d_a), size));
+        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(reinterpret_cast<void**>(&d_b), size));
+        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(reinterpret_cast<void**>(&d_c), size));
 
         // Copy data to device
         CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMemcpy(d_a, h_a.data(), size, cudaMemcpyHostToDevice));
@@ -76,7 +77,10 @@ extern "C" __global__ void vector_add(float* a, float* b, float* c, int n) {
         std::cout << "Launching kernel with " << blocksPerGrid << " blocks of " << threadsPerBlock << " threads" << std::endl;
 
         // Prepare kernel arguments
-        std::vector<void*> args = {&d_a, &d_b, &d_c, &N};
+        void* d_a_ptr = static_cast<void*>(d_a);
+        void* d_b_ptr = static_cast<void*>(d_b);
+        void* d_c_ptr = static_cast<void*>(d_c);
+        std::vector<void*> args = {&d_a_ptr, &d_b_ptr, &d_c_ptr, const_cast<void*>(static_cast<const void*>(&N))};
         
         // Launch kernel and measure execution time
         start = std::chrono::high_resolution_clock::now();

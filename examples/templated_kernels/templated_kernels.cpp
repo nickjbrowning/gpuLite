@@ -5,6 +5,7 @@
 #include <random>
 #include <chrono>
 #include <type_traits>
+#include <iomanip>
 
 template<typename T>
 void run_templated_example(const std::string& type_name) {
@@ -64,8 +65,8 @@ extern "C" __global__ void process_array_)" + type_name + R"(()" +
     try {
         // Allocate device memory
         T *d_input, *d_output;
-        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(&d_input, size));
-        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(&d_output, size));
+        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(reinterpret_cast<void**>(&d_input), size));
+        CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(reinterpret_cast<void**>(&d_output), size));
 
         // Copy input data to device
         CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMemcpy(d_input, h_input.data(), size, cudaMemcpyHostToDevice));
@@ -94,7 +95,9 @@ extern "C" __global__ void process_array_)" + type_name + R"(()" +
         int blocksPerGrid = (N + threadsPerBlock - 1) / threadsPerBlock;
 
         // Prepare kernel arguments
-        std::vector<void*> args = {&d_input, &d_output, &N};
+        void* d_input_ptr = static_cast<void*>(d_input);
+        void* d_output_ptr = static_cast<void*>(d_output);
+        std::vector<void*> args = {&d_input_ptr, &d_output_ptr, const_cast<void*>(static_cast<const void*>(&N))};
         
         // Launch kernel
         auto kernel_start = std::chrono::high_resolution_clock::now();
