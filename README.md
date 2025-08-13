@@ -100,8 +100,8 @@ g++ -std=c++17 main.cpp -ldl -o my_gpu_app
 
 **Requirements:**
 - C++17 compatible compiler (GCC 7+, Clang 5+)
-- NVIDIA GPU drivers installed (no CUDA SDK required!)
-- Linux system
+- CUDA SDK installed at run-time, but not at build time!
+- Linux
 
 ### Loading Kernels from Files
 
