@@ -129,7 +129,7 @@ extern "C" __global__ void matrix_multiply(float* A, float* B, float* C, int N) 
             "matrix_multiply",                      // kernel name
             kernel_source,                          // kernel source code
             "matrix_multiply.cu",                   // virtual source filename
-            {"-O3", "-std=c++17", "--use_fast_math"}  // compilation options
+            {"-std=c++17", "--use_fast_math"}       // compilation options
         );
         auto compile_end = std::chrono::high_resolution_clock::now();
         

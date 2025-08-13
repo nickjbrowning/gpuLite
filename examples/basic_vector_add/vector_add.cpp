@@ -63,7 +63,7 @@ extern "C" __global__ void vector_add(float* a, float* b, float* c, int n) {
             "vector_add",           // kernel name
             kernel_source,          // kernel source code
             "vector_add.cu",        // virtual source filename
-            {"-O3", "-std=c++17"}   // compilation options
+            {"-std=c++17"}          // compilation options
         );
         auto end = std::chrono::high_resolution_clock::now();
         

@@ -52,7 +52,7 @@ int main() {
         "vector_add",           // kernel name
         kernel_source,          // kernel source code
         "vector_add.cu",        // virtual source filename
-        {"-std=c++14"}          // compilation options
+        {"-std=c++17"}          // compilation options
     );
 
     // Allocate device memory and launch kernel
@@ -111,7 +111,7 @@ auto* kernel = KernelFactory::instance().createFromSource(
     "my_kernel",
     "/path/to/kernel.cu",
     "kernel.cu",
-    {"-O3", "-std=c++17"}
+    {"-std=c++17"}
 );
 ```
 
@@ -230,7 +230,6 @@ target_link_libraries(my_app PRIVATE gpuLite)
 
 ```cpp
 std::vector<std::string> options = {
-    "-O3",                          // Optimization level
     "-std=c++17",                   // C++ standard
     "--use_fast_math",              // Fast math operations
     "-DBLOCK_SIZE=256",             // Preprocessor definitions
