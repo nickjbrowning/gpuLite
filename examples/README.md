@@ -6,7 +6,7 @@ This directory contains comprehensive examples demonstrating how to use gpuLite 
 
 - **Runtime Requirements:**
   - NVIDIA GPU with CUDA capability 3.0+
-  - NVIDIA drivers installed (check with `nvidia-smi`)
+  - NVIDIA drivers and CUDA SDK installed (check with `nvidia-smi`)
   - Linux operating system
 
 - **Build Requirements:**
@@ -23,7 +23,7 @@ This directory contains comprehensive examples demonstrating how to use gpuLite 
 
 ### 2. Matrix Multiplication (`matrix_multiply/`)
 - **Purpose**: More complex computational example
-- **Features**: Optimized tiled matrix multiplication, CPU comparison
+- **Features**: tiled matrix multiplication, CPU comparison
 - **Concepts**: Shared memory usage, performance optimization, GFLOPS calculation
 
 ### 3. Templated Kernels (`templated_kernels/`)
