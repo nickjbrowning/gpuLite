@@ -59,12 +59,15 @@ int main() {
     float *d_a, *d_b, *d_c;
     int n = 1024;
     
-    CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(&d_a, n * sizeof(float)));
-    CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(&d_b, n * sizeof(float)));
-    CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(&d_c, n * sizeof(float)));
+    CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(reinterpret_cast<void**>(&d_a), n * sizeof(float)));
+    CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(reinterpret_cast<void**>(&d_b), n * sizeof(float)));
+    CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(reinterpret_cast<void**>(&d_c), n * sizeof(float)));
 
     // Prepare kernel arguments
-    std::vector<void*> args = {&d_a, &d_b, &d_c, &n};
+    void* d_a_ptr = static_cast<void*>(d_a);
+    void* d_b_ptr = static_cast<void*>(d_b);
+    void* d_c_ptr = static_cast<void*>(d_c);
+    std::vector<void*> args = {&d_a_ptr, &d_b_ptr, &d_c_ptr, const_cast<void*>(static_cast<const void*>(&n))};
     
     // Launch kernel
     kernel->launch(
@@ -84,6 +87,21 @@ int main() {
     return 0;
 }
 ```
+
+**Compilation:**
+
+```bash
+# Save the above code as main.cpp, then compile:
+g++ -std=c++17 main.cpp -ldl -o my_gpu_app
+
+# Run the application:
+./my_gpu_app
+```
+
+**Requirements:**
+- C++17 compatible compiler (GCC 7+, Clang 5+)
+- NVIDIA GPU drivers installed (no CUDA SDK required!)
+- Linux system
 
 ### Loading Kernels from Files
 
