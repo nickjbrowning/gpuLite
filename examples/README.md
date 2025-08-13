@@ -160,21 +160,6 @@ SUCCESS: double templated kernel executed correctly!
 Memory bandwidth: 53.21 GB/s
 ```
 
-## Performance Notes
-
-### First Run vs Subsequent Runs
-- **First run**: Includes kernel compilation time (100-500ms)
-- **Subsequent runs**: Uses cached kernels (sub-millisecond overhead)
-
-### Compilation Time Factors
-- Kernel complexity
-- Optimization level (`-O3`)
-- Target GPU architecture (auto-detected)
-
-### Memory Bandwidth
-- Actual bandwidth depends on GPU model
-- Results show effective memory bandwidth including kernel overhead
-
 ## Troubleshooting
 
 ### "CUDA runtime libraries not available"
@@ -197,11 +182,6 @@ cmake --version  # Needs 3.12+
 # Verbose build to see detailed errors
 make VERBOSE=1
 ```
-
-### Runtime Errors
-- **Kernel compilation fails**: Check GPU compute capability compatibility
-- **Memory errors**: Reduce problem sizes for GPUs with limited memory
-- **Performance issues**: Ensure GPU isn't being throttled
 
 ### Common Solutions
 ```bash
@@ -241,13 +221,6 @@ auto* kernel = KernelFactory::instance().create(
     {"-O3", "-std=c++17"}
 );
 ```
-
-### Performance Optimization Tips
-1. Use appropriate launch configurations
-2. Optimize memory access patterns
-3. Utilize shared memory for data reuse
-4. Choose optimal block sizes (multiples of 32)
-5. Enable fast math with `--use_fast_math`
 
 ## Integration with Existing Projects
 
