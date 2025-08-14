@@ -5,6 +5,9 @@
 #include <random>
 #include <chrono>
 #include <iomanip>
+#include <thread>
+#include <algorithm>
+#include <numeric>
 
 int main() {
     try {
@@ -82,20 +85,54 @@ extern "C" __global__ void vector_add(float* a, float* b, float* c, int n) {
         void* d_c_ptr = static_cast<void*>(d_c);
         std::vector<void*> args = {&d_a_ptr, &d_b_ptr, &d_c_ptr, const_cast<void*>(static_cast<const void*>(&N))};
         
-        // Launch kernel and measure execution time
-        start = std::chrono::high_resolution_clock::now();
-        kernel->launch(
-            dim3(blocksPerGrid),    // grid size
-            dim3(threadsPerBlock),  // block size
-            0,                      // shared memory size
-            nullptr,                // stream (default)
-            args,                   // kernel arguments
-            true                    // synchronize after launch
-        );
-        end = std::chrono::high_resolution_clock::now();
+        // Warmup runs
+        std::cout << "Performing warmup runs..." << std::endl;
+        for (int i = 0; i < 5; i++) {
+            kernel->launch(dim3(blocksPerGrid), dim3(threadsPerBlock), 0, nullptr, args, true);
+        }
         
-        auto kernel_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-        std::cout << "Kernel executed in: " << kernel_time.count() << " μs" << std::endl;
+        // Cooldown period
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        
+        // Benchmark runs
+        std::cout << "Running performance benchmark..." << std::endl;
+        const int num_runs = 20;
+        std::vector<double> execution_times;
+        execution_times.reserve(num_runs);
+        
+        for (int run = 0; run < num_runs; run++) {
+            start = std::chrono::high_resolution_clock::now();
+            kernel->launch(
+                dim3(blocksPerGrid),    // grid size
+                dim3(threadsPerBlock),  // block size
+                0,                      // shared memory size
+                nullptr,                // stream (default)
+                args,                   // kernel arguments
+                true                    // synchronize after launch
+            );
+            end = std::chrono::high_resolution_clock::now();
+            
+            auto kernel_time = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+            execution_times.push_back(kernel_time.count());
+            
+            // Small cooldown between runs
+            if (run < num_runs - 1) {
+                std::this_thread::sleep_for(std::chrono::microseconds(100));
+            }
+        }
+        
+        // Calculate statistics
+        std::sort(execution_times.begin(), execution_times.end());
+        double min_time = execution_times.front();
+        double max_time = execution_times.back();
+        double median_time = execution_times[num_runs / 2];
+        double avg_time = std::accumulate(execution_times.begin(), execution_times.end(), 0.0) / num_runs;
+        
+        std::cout << "Execution time statistics (μs):" << std::endl;
+        std::cout << "  Min: " << std::fixed << std::setprecision(2) << min_time << " μs" << std::endl;
+        std::cout << "  Max: " << max_time << " μs" << std::endl;
+        std::cout << "  Median: " << median_time << " μs" << std::endl;
+        std::cout << "  Average: " << avg_time << " μs" << std::endl;
 
         // Copy result back to host
         CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMemcpy(h_c.data(), d_c, size, cudaMemcpyDeviceToHost));
@@ -115,9 +152,11 @@ extern "C" __global__ void vector_add(float* a, float* b, float* c, int n) {
         if (success) {
             std::cout << "SUCCESS: Vector addition completed correctly!" << std::endl;
             
-            // Calculate performance metrics
-            double bandwidth = (3.0 * N * sizeof(float)) / (kernel_time.count() * 1e-6) / 1e9;
-            std::cout << "Memory bandwidth: " << std::fixed << std::setprecision(2) << bandwidth << " GB/s" << std::endl;
+            // Calculate performance metrics using median time for best estimate
+            double bandwidth_avg = (3.0 * N * sizeof(float)) / (avg_time * 1e-6) / 1e9;
+            double bandwidth_peak = (3.0 * N * sizeof(float)) / (min_time * 1e-6) / 1e9;
+            std::cout << "Memory bandwidth (average): " << std::fixed << std::setprecision(2) << bandwidth_avg << " GB/s" << std::endl;
+            std::cout << "Memory bandwidth (peak): " << bandwidth_peak << " GB/s" << std::endl;
         } else {
             std::cout << "FAILURE: Results do not match expected values." << std::endl;
         }

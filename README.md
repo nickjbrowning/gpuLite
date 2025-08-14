@@ -67,12 +67,12 @@ int main() {
     void* d_a_ptr = static_cast<void*>(d_a);
     void* d_b_ptr = static_cast<void*>(d_b);
     void* d_c_ptr = static_cast<void*>(d_c);
-    std::vector<void*> args = {&d_a_ptr, &d_b_ptr, &d_c_ptr, const_cast<void*>(static_cast<const void*>(&n))};
+    std::vector<void*> args = {&d_a_ptr, &d_b_ptr, &d_c_ptr, &n};
     
     // Launch kernel
     kernel->launch(
-        dim3((n + 255) / 256),  // grid size
-        dim3(256),              // block size
+        dim3((n + 127) / 128),  // grid size
+        dim3(128),              // block size
         0,                      // shared memory size
         nullptr,                // stream
         args,                   // kernel arguments
@@ -138,11 +138,12 @@ project(MyProject LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# Add gpuLite headers
-add_subdirectory(external/gpuLite)
-
 # Your executable
 add_executable(my_app main.cpp)
+
+# Add gpuLite headers
+target_include_directories(my_app PRIVATE external/gpuLite)
+
 target_link_libraries(my_app PRIVATE gpuLite)
 
 # Link system libraries required by gpuLite
@@ -177,7 +178,7 @@ target_link_libraries(gpuLite INTERFACE
 
 # Installation rules
 install(TARGETS gpuLite EXPORT gpuLiteConfig)
-install(FILES dynamic_cuda.hpp cuda_cache.hpp DESTINATION include)
+install(FILES dynamic_cuda.hpp cuda_cache.hpp cuda_types_wrapper.hpp DESTINATION include)
 install(EXPORT gpuLiteConfig DESTINATION lib/cmake/gpuLite)
 ```
 
@@ -198,6 +199,7 @@ add_executable(my_app
     # Copy these headers to your project
     gpuLite/dynamic_cuda.hpp
     gpuLite/cuda_cache.hpp
+    gpuLite/cuda_types_wrapper.hpp
 )
 
 # Link required system libraries
@@ -302,7 +304,7 @@ try {
 ### CUDA Libraries (loaded dynamically at runtime)
 - `libcuda.so` - CUDA Driver API
 - `libcudart.so` - CUDA Runtime API  
-- `libnvrtc.so` - NVIDIA Runtime Compilation
+- `libnvrtc.so` - NVIDIA Runtime Compilation API
 - **Note**: These libraries are only required at runtime, provided by NVIDIA drivers
 
 ## Platform Support

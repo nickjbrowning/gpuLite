@@ -103,12 +103,19 @@ cd examples/basic_vector_add/build
 Vector Addition Example
 Vector size: 1048576 elements
 Compiling kernel...
-Kernel compiled in: 234 ms
+Kernel compiled in: 0 ms
 Launching kernel with 4096 blocks of 256 threads
-Kernel executed in: 142 μs
+Performing warmup runs...
+Running performance benchmark...
+Execution time statistics (μs):
+  Min: 21.00 μs
+  Max: 98.00 μs
+  Median: 23.00 μs
+  Average: 32.25 μs
 Verifying results...
 SUCCESS: Vector addition completed correctly!
-Memory bandwidth: 85.32 GB/s
+Memory bandwidth (average): 390.17 GB/s
+Memory bandwidth (peak): 599.19 GB/s
 ```
 
 ### Matrix Multiplication
@@ -122,16 +129,24 @@ cd examples/matrix_multiply/build
 Matrix Multiplication Example
 Matrix size: 1024x1024
 Computing CPU reference...
-CPU computation time: 3542 ms
+CPU computation time: 3256 ms
 Compiling kernel...
-Kernel compiled in: 445 ms
+Kernel compiled in: 0 ms
 Launching kernel with 64x64 blocks of 16x16 threads
-GPU kernel executed in: 1523 μs
+Performing warmup runs...
+Running performance benchmark...
+Execution time statistics (μs):
+  Min: 256.00 μs
+  Max: 347.00 μs
+  Median: 267.00 μs
+  Average: 271.10 μs
 Verifying results...
 SUCCESS: Matrix multiplication completed correctly!
-Maximum error: 1.23e-05
-GPU Performance: 1405.67 GFLOPS
-Speedup over CPU: 2326.45x
+Maximum error: 1.91e-05
+GPU Performance (average): 7921.37 GFLOPS
+GPU Performance (peak): 8388.61 GFLOPS
+Speedup over CPU (average): 12010.33x
+Speedup over CPU (peak): 12718.75x
 ```
 
 ### Templated Kernels
@@ -148,17 +163,31 @@ for different data types using runtime compilation.
 
 === float Template Example ===
 Compiling float kernel: process_array_float
-Kernel compiled in: 198 ms
-Kernel executed in: 89 μs
+Kernel compiled in: 0 ms
+Performing warmup runs...
+Running performance benchmark...
+Execution time statistics (μs):
+  Min: 25.00 μs
+  Max: 372.00 μs
+  Median: 25.00 μs
+  Average: 44.80 μs
 SUCCESS: float templated kernel executed correctly!
-Memory bandwidth: 46.78 GB/s
+Memory bandwidth (average): 46.81 GB/s
+Memory bandwidth (peak): 83.89 GB/s
 
 === double Template Example ===
 Compiling double kernel: process_array_double
-Kernel compiled in: 201 ms
-Kernel executed in: 156 μs
+Kernel compiled in: 0 ms
+Performing warmup runs...
+Running performance benchmark...
+Execution time statistics (μs):
+  Min: 24.00 μs
+  Max: 94.00 μs
+  Median: 33.00 μs
+  Average: 37.45 μs
 SUCCESS: double templated kernel executed correctly!
-Memory bandwidth: 53.21 GB/s
+Memory bandwidth (average): 112.00 GB/s
+Memory bandwidth (peak): 174.76 GB/s
 ```
 
 
