@@ -350,6 +350,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - NVIDIA CUDA Toolkit documentation
 - NVRTC API reference
+- https://github.com/NVIDIA/jitify
 - Contributors and early adopters
 
 ---
