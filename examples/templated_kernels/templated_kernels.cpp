@@ -98,9 +98,7 @@ extern "C" __global__ void process_array_)" + type_name + R"(()" +
         int blocksPerGrid = (N + threadsPerBlock - 1) / threadsPerBlock;
 
         // Prepare kernel arguments
-        void* d_input_ptr = static_cast<void*>(d_input);
-        void* d_output_ptr = static_cast<void*>(d_output);
-        std::vector<void*> args = {&d_input_ptr, &d_output_ptr, const_cast<void*>(static_cast<const void*>(&N))};
+        std::vector<void*> args = {&d_input, &d_output, const_cast<void*>(static_cast<const void*>(&N))};
         
         // Warmup runs
         std::cout << "Performing warmup runs..." << std::endl;

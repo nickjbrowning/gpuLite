@@ -64,10 +64,7 @@ int main() {
     CUDART_SAFE_CALL(CUDART_INSTANCE.cudaMalloc(reinterpret_cast<void**>(&d_c), n * sizeof(float)));
 
     // Prepare kernel arguments
-    void* d_a_ptr = static_cast<void*>(d_a);
-    void* d_b_ptr = static_cast<void*>(d_b);
-    void* d_c_ptr = static_cast<void*>(d_c);
-    std::vector<void*> args = {&d_a_ptr, &d_b_ptr, &d_c_ptr, &n};
+    std::vector<void*> args = {&d_a, &d_b, &d_c, &n};
     
     // Launch kernel
     kernel->launch(

@@ -80,10 +80,7 @@ extern "C" __global__ void vector_add(float* a, float* b, float* c, int n) {
         std::cout << "Launching kernel with " << blocksPerGrid << " blocks of " << threadsPerBlock << " threads" << std::endl;
 
         // Prepare kernel arguments
-        void* d_a_ptr = static_cast<void*>(d_a);
-        void* d_b_ptr = static_cast<void*>(d_b);
-        void* d_c_ptr = static_cast<void*>(d_c);
-        std::vector<void*> args = {&d_a_ptr, &d_b_ptr, &d_c_ptr, const_cast<void*>(static_cast<const void*>(&N))};
+        std::vector<void*> args = {&d_a, &d_b, &d_c, const_cast<void*>(static_cast<const void*>(&N))};
         
         // Warmup runs
         std::cout << "Performing warmup runs..." << std::endl;
