@@ -85,6 +85,7 @@ class CUDART {
     using cudaSetDevice_t = cudaError_t (*)(int);
     using cudaMalloc_t = cudaError_t (*)(void**, size_t);
     using cudaMemcpy_t = cudaError_t (*)(void*, const void*, size_t, cudaMemcpyKind);
+    using cudaMemset_t = cudaError_t (*)(void*, int, size_t);
     using cudaGetErrorName_t = const char* (*)(cudaError_t);
     using cudaGetErrorString_t = const char* (*)(cudaError_t);
     using cudaDeviceSynchronize_t = cudaError_t (*)(void);
@@ -99,6 +100,7 @@ class CUDART {
     cudaGetDevice_t cudaGetDevice;
     cudaSetDevice_t cudaSetDevice;
     cudaMalloc_t cudaMalloc;
+    cudaMemset_t cudaMemset;
     cudaMemcpy_t cudaMemcpy;
     cudaGetErrorName_t cudaGetErrorName;
     cudaGetErrorString_t cudaGetErrorString;
@@ -122,6 +124,7 @@ class CUDART {
             cudaGetDevice = load<cudaGetDevice_t>(cudartHandle, "cudaGetDevice");
             cudaSetDevice = load<cudaSetDevice_t>(cudartHandle, "cudaSetDevice");
             cudaMalloc = load<cudaMalloc_t>(cudartHandle, "cudaMalloc");
+            cudaMemset = load<cudaMemset_t>(cudartHandle, "cudaMemset");
             cudaMemcpy = load<cudaMemcpy_t>(cudartHandle, "cudaMemcpy");
             cudaGetErrorName = load<cudaGetErrorName_t>(cudartHandle, "cudaGetErrorName");
             cudaGetErrorString = load<cudaGetErrorString_t>(cudartHandle, "cudaGetErrorString");

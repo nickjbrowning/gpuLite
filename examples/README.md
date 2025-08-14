@@ -31,6 +31,7 @@ This directory contains comprehensive examples demonstrating how to use gpuLite 
 - **Features**: Multiple data types, template-like kernel generation
 - **Concepts**: Runtime type specialization, kernel naming strategies
 
+
 ## Compilation Instructions
 
 ### Method 1: Individual Examples (Recommended)
@@ -160,6 +161,7 @@ SUCCESS: double templated kernel executed correctly!
 Memory bandwidth: 53.21 GB/s
 ```
 
+
 ## Troubleshooting
 
 ### "CUDA runtime libraries not available"
@@ -218,9 +220,10 @@ auto* kernel = KernelFactory::instance().create(
     "my_kernel",
     my_kernel,
     "my_kernel.cu",
-    {"-O3", "-std=c++17"}
+    {"-std=c++17"}
 );
 ```
+
 
 ## Integration with Existing Projects
 
