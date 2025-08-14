@@ -126,7 +126,7 @@ auto* kernel = factory.create(kernel_name, source, "template_kernel.cu", {});
 
 ### Method 1: Header-Only Integration
 
-Add gpuLite as a subdirectory to your project:
+Add gpuLite as an include directory to your project:
 
 ```cmake
 # CMakeLists.txt
