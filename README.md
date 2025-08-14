@@ -302,7 +302,7 @@ try {
 - `libcuda.so` - CUDA Driver API
 - `libcudart.so` - CUDA Runtime API  
 - `libnvrtc.so` - NVIDIA Runtime Compilation API
-- **Note**: These libraries are only required at runtime, provided by NVIDIA drivers
+- **Note**: These libraries are only required at runtime, provided by the CUDA SDK/NVIDIA drivers.
 
 ## Platform Support
 
