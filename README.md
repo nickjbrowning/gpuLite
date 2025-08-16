@@ -213,7 +213,7 @@ include(FetchContent)
 
 FetchContent_Declare(
     gpuLite
-    GIT_REPOSITORY https://github.com/nickjbrowning/gpuLite.git
+    GIT_REPOSITORY https://github.com/not-bug-is-feature/gpuLite.git
     GIT_TAG main
 )
 
