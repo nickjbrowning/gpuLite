@@ -15,10 +15,15 @@ target_include_directories(gpuLite INTERFACE
 
 # System dependencies
 find_package(Threads REQUIRED)
-target_link_libraries(gpuLite INTERFACE 
-    ${CMAKE_DL_LIBS}
-    Threads::Threads
-)
+if(WIN32)
+    # Windows doesn't need explicit dynamic loading libraries
+    target_link_libraries(gpuLite INTERFACE Threads::Threads)
+else()
+    target_link_libraries(gpuLite INTERFACE 
+        ${CMAKE_DL_LIBS}
+        Threads::Threads
+    )
+endif()
 
 # Build examples by default
 option(BUILD_EXAMPLES "Build gpuLite examples" ON)
