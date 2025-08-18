@@ -32,9 +32,7 @@ endif()
 # Installation rules
 install(TARGETS gpuLite EXPORT gpuLiteConfig)
 install(FILES 
-    dynamic_cuda.hpp 
-    cuda_cache.hpp 
-    cuda_types_wrapper.hpp 
+    gpuLite.hpp 
     DESTINATION include
 )
 install(EXPORT gpuLiteConfig DESTINATION lib/cmake/gpuLite)

@@ -1,5 +1,4 @@
-#include "../../dynamic_cuda.hpp"
-#include "../../cuda_cache.hpp"
+#include "../../gpuLite.hpp"
 #include <iostream>
 #include <vector>
 #include <random>
