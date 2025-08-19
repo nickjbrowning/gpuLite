@@ -1,6 +1,6 @@
-# gpuLite
+# gpu-lite
 
-A lightweight C++ library for dynamic CUDA runtime compilation and kernel caching. gpuLite simplifies building and deploying CUDA-dependent applications by providing runtime symbol resolution and automated kernel compilation with caching.
+A lightweight C++ library for dynamic CUDA runtime compilation and kernel caching. gpu-lite simplifies building and deploying CUDA-dependent applications by providing runtime symbol resolution and automated kernel compilation with caching.
 
 **🚀 No CUDA SDK Required at Build Time!** - Compile your applications without installing the CUDA SDK.
 
@@ -11,11 +11,11 @@ A lightweight C++ library for dynamic CUDA runtime compilation and kernel cachin
 - **Runtime Compilation**: Compiles CUDA kernels using NVRTC with automatic compute capability detection
 - **Kernel Caching**: Intelligent caching system to avoid recompilation of identical kernels
 - **Easy Integration**: Header-only design for simple project integration
-- **Cross-Platform Support**: Currently supports Linux (with plans for additional platforms)
+- **Cross-Platform Support**: Supports Linux and Windows platforms
 
-## Why gpuLite?
+## Why gpu-lite?
 
-Traditional CUDA applications require the CUDA SDK to be installed at build time and often have complex deployment requirements. gpuLite solves this by:
+Traditional CUDA applications require the CUDA SDK to be installed at build time and often have complex deployment requirements. gpu-lite solves this by:
 
 1. **Eliminating build-time CUDA dependencies** - No need for CUDA SDK during compilation
 2. **Simplifying deployment** - Applications can run on any system with CUDA drivers installed
@@ -27,7 +27,7 @@ Traditional CUDA applications require the CUDA SDK to be installed at build time
 ### Basic Usage
 
 ```cpp
-#include "gpuLite.hpp"
+#include "gpulite.hpp"
 
 int main() {
     // Check if CUDA is available
@@ -86,6 +86,7 @@ int main() {
 
 **Compilation:**
 
+**Linux:**
 ```bash
 # Save the above code as main.cpp, then compile:
 g++ -std=c++17 main.cpp -ldl -o my_gpu_app
@@ -94,10 +95,19 @@ g++ -std=c++17 main.cpp -ldl -o my_gpu_app
 ./my_gpu_app
 ```
 
+**Windows (with Visual Studio):**
+```cmd
+# Save the above code as main.cpp, then compile:
+cl /std:c++17 main.cpp /Fe:my_gpu_app.exe
+
+# Run the application:
+my_gpu_app.exe
+```
+
 **Requirements:**
-- C++17 compatible compiler (GCC 7+, Clang 5+)
+- C++17 compatible compiler (GCC 7+, Clang 5+, MSVC 2017+)
 - CUDA SDK installed at run-time, but not at build time!
-- Linux
+- Linux or Windows
 
 ### Loading Kernels from Files
 
@@ -125,7 +135,7 @@ auto* kernel = factory.create(kernel_name, source, "template_kernel.cu", {});
 
 ### Method 1: Header-Only Integration
 
-Add gpuLite as an include directory to your project:
+Add gpu-lite as an include directory to your project:
 
 ```cmake
 # CMakeLists.txt
@@ -137,45 +147,45 @@ set(CMAKE_CXX_STANDARD 17)
 # Your executable
 add_executable(my_app main.cpp)
 
-# Add gpuLite headers
-target_include_directories(my_app PRIVATE external/gpuLite)
+# Add gpu-lite headers
+target_include_directories(my_app PRIVATE external/gpu-lite)
 
-target_link_libraries(my_app PRIVATE gpuLite)
+target_link_libraries(my_app PRIVATE gpu-lite)
 
-# Link system libraries required by gpuLite
+# Link system libraries required by gpu-lite
 target_link_libraries(my_app PRIVATE ${CMAKE_DL_LIBS})
 ```
 
-Create a simple CMakeLists.txt in the gpuLite directory:
+Create a simple CMakeLists.txt in the gpu-lite directory:
 
 ```cmake
-# gpuLite/CMakeLists.txt
+# gpu-lite/CMakeLists.txt
 cmake_minimum_required(VERSION 3.12)
-project(gpuLite LANGUAGES CXX)
+project(gpu-lite LANGUAGES CXX)
 
 # Create header-only interface library
-add_library(gpuLite INTERFACE)
+add_library(gpu-lite INTERFACE)
 
 # Include directories
-target_include_directories(gpuLite INTERFACE
+target_include_directories(gpu-lite INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
 # C++17 requirement
-target_compile_features(gpuLite INTERFACE cxx_std_17)
+target_compile_features(gpu-lite INTERFACE cxx_std_17)
 
 # System dependencies
 find_package(Threads REQUIRED)
-target_link_libraries(gpuLite INTERFACE 
+target_link_libraries(gpu-lite INTERFACE 
     ${CMAKE_DL_LIBS}
     Threads::Threads
 )
 
 # Installation rules
-install(TARGETS gpuLite EXPORT gpuLiteConfig)
-install(FILES gpuLite.hpp DESTINATION include)
-install(EXPORT gpuLiteConfig DESTINATION lib/cmake/gpuLite)
+install(TARGETS gpu-lite EXPORT gpu-liteConfig)
+install(FILES gpulite.hpp DESTINATION include)
+install(EXPORT gpu-liteConfig DESTINATION lib/cmake/gpu-lite)
 ```
 
 ### Method 2: Manual Integration
@@ -193,11 +203,15 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(my_app 
     main.cpp
     # Copy this header to your project
-    gpuLite/gpuLite.hpp
+    gpu-lite/gpulite.hpp
 )
 
 # Link required system libraries
-target_link_libraries(my_app PRIVATE ${CMAKE_DL_LIBS})
+if(WIN32)
+    # Windows doesn't need explicit dynamic loading libraries
+else()
+    target_link_libraries(my_app PRIVATE ${CMAKE_DL_LIBS})
+endif()
 ```
 
 ### Method 3: Using FetchContent
@@ -209,15 +223,15 @@ project(MyProject LANGUAGES CXX)
 include(FetchContent)
 
 FetchContent_Declare(
-    gpuLite
-    GIT_REPOSITORY https://github.com/not-bug-is-feature/gpuLite.git
+    gpu-lite
+    GIT_REPOSITORY https://github.com/not-bug-is-feature/gpu-lite.git
     GIT_TAG main
 )
 
-FetchContent_MakeAvailable(gpuLite)
+FetchContent_MakeAvailable(gpu-lite)
 
 add_executable(my_app main.cpp)
-target_link_libraries(my_app PRIVATE gpuLite)
+target_link_libraries(my_app PRIVATE gpu-lite)
 ```
 
 ## Advanced Usage
@@ -270,7 +284,7 @@ CUDART_SAFE_CALL(CUDART_INSTANCE.cudaStreamDestroy(stream));
 
 ## Error Handling
 
-gpuLite provides comprehensive error checking with detailed error messages:
+gpu-lite provides comprehensive error checking with detailed error messages:
 
 ```cpp
 try {
@@ -287,26 +301,34 @@ try {
 ### Runtime Requirements
 - NVIDIA GPU with CUDA capability 3.0 or higher
 - NVIDIA CUDA drivers installed
-- Linux operating system (currently supported)
+- Linux or Windows operating system
 
 ### Build Requirements (No CUDA SDK Needed!)
-- C++17 compatible compiler (GCC 7+, Clang 5+)
+- C++17 compatible compiler (GCC 7+, Clang 5+, MSVC 2017+)
 - CMake 3.12 or higher
 - Standard C++ library with threading support
-- **No CUDA SDK installation required** - gpuLite uses minimal type wrappers
+- **No CUDA SDK installation required** - gpu-lite uses minimal type wrappers
 
 ### CUDA Libraries (loaded dynamically at runtime)
+
+**Linux:**
 - `libcuda.so` - CUDA Driver API
 - `libcudart.so` - CUDA Runtime API  
 - `libnvrtc.so` - NVIDIA Runtime Compilation API
-- **Note**: These libraries are only required at runtime, provided by the CUDA SDK/NVIDIA drivers.
+
+**Windows:**
+- `nvcuda.dll` - CUDA Driver API
+- `cudart64_*.dll` - CUDA Runtime API
+- `nvrtc64_*.dll` - NVIDIA Runtime Compilation API
+
+**Note**: These libraries are only required at runtime, provided by the CUDA SDK/NVIDIA drivers.
 
 ## Platform Support
 
 | Platform | Status |
 |----------|--------|
 | Linux    | ✅ Supported |
-| Windows  | 🚧 Planned |
+| Windows  | ✅ Supported |
 | macOS    | ❌ Not applicable (no CUDA support) |
 
 ## CUDA/HIP Support
@@ -321,13 +343,20 @@ try {
 - **First Launch**: Kernels are compiled on first use, which may add initial latency
 - **Subsequent Launches**: Cached kernels launch immediately with minimal overhead
 - **Memory Usage**: Compiled kernels are kept in memory for the application lifetime
-- **Context Switching**: gpuLite automatically handles CUDA context management
+- **Context Switching**: gpu-lite automatically handles CUDA context management
 
 ## Troubleshooting
 
 ### "CUDA runtime not available" Error
+
+**Linux:**
 - Ensure NVIDIA drivers are installed: `nvidia-smi`
 - Verify CUDA libraries are in library path: `ldconfig -p | grep cuda`
+
+**Windows:**
+- Ensure NVIDIA drivers are installed: `nvidia-smi`
+- Verify CUDA libraries are in system PATH or same directory as executable
+- Check that CUDA toolkit is installed and DLLs are accessible
 
 ### Compilation Errors
 - Check kernel syntax using `nvcc` offline
@@ -338,6 +367,58 @@ try {
 - Enable CUDA error checking in debug builds
 - Use `cuda-gdb` and `compute-sanitizer` for kernel debugging
 - Check memory alignment and access patterns
+
+## Build Scripts
+
+For convenience, platform-specific build scripts are provided in the `scripts/` directory.
+
+### Linux
+
+```bash
+# Run from the gpu-lite root directory
+./scripts/build_examples_linux.sh
+```
+
+### Windows
+
+```batch
+# Run from the gpu-lite root directory
+scripts\build_examples_windows.bat
+```
+
+## Manual Build Instructions
+
+You can also build manually with CMake:
+
+### Linux
+```bash
+# Create build directory
+mkdir build && cd build
+
+# Generate Makefiles
+cmake ..
+
+# Build the project
+make -j$(nproc)
+```
+
+### Windows
+```cmd
+# Create build directory
+mkdir build
+cd build
+
+# Generate Visual Studio project files
+cmake .. -G "Visual Studio 16 2019" -A x64
+
+# Build the project
+cmake --build . --config Release
+```
+
+**Note**: Ensure you have:
+- Visual Studio 2017 or later with C++17 support
+- CMake 3.12 or later
+- NVIDIA drivers installed (CUDA SDK not required at build time)
 
 ## License
 

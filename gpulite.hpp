@@ -1,4 +1,4 @@
-// gpuLite - Combined Header
+// gpu-lite - Combined Header
 // A lightweight C++ library for dynamic CUDA runtime compilation and kernel caching
 #ifndef GPULITE_HPP
 #define GPULITE_HPP
@@ -119,6 +119,8 @@ enum {
 
 #ifdef __linux__
 #include <dlfcn.h>
+#elif defined(_WIN32)
+#include <windows.h>
 #else
 #error "Platform not supported"
 #endif
@@ -172,7 +174,11 @@ enum {
 
 // Define a template to dynamically load symbols
 template <typename FuncType> FuncType load(void* handle, const char* functionName) {
+#ifdef __linux__
     auto func = reinterpret_cast<FuncType>(dlsym(handle, functionName));
+#elif defined(_WIN32)
+    auto func = reinterpret_cast<FuncType>(GetProcAddress(static_cast<HMODULE>(handle), functionName));
+#endif
     if (!func) {
         throw std::runtime_error(std::string("Failed to load function: ") + functionName);
     }
@@ -228,6 +234,14 @@ class CUDART {
     CUDART() {
 #ifdef __linux__
         cudartHandle = dlopen("libcudart.so", RTLD_NOW);
+#elif defined(_WIN32)
+        cudartHandle = LoadLibraryA("cudart64_12.dll");
+        if (!cudartHandle) {
+            cudartHandle = LoadLibraryA("cudart64_11.dll");
+        }
+        if (!cudartHandle) {
+            cudartHandle = LoadLibraryA("cudart64_10.dll");
+        }
 #else
 #error "Platform not supported"
 #endif
@@ -258,6 +272,10 @@ class CUDART {
 #ifdef __linux__
         if (cudartHandle) {
             dlclose(cudartHandle);
+        }
+#elif defined(_WIN32)
+        if (cudartHandle) {
+            FreeLibrary(static_cast<HMODULE>(cudartHandle));
         }
 #else
 #error "Platform not supported"
@@ -349,6 +367,8 @@ class CUDADriver {
     CUDADriver() {
 #ifdef __linux__
         cudaHandle = dlopen("libcuda.so", RTLD_NOW);
+#elif defined(_WIN32)
+        cudaHandle = LoadLibraryA("nvcuda.dll");
 #else
 #error "Platform not supported"
 #endif
@@ -387,6 +407,10 @@ class CUDADriver {
 #ifdef __linux__
         if (cudaHandle) {
             dlclose(cudaHandle);
+        }
+#elif defined(_WIN32)
+        if (cudaHandle) {
+            FreeLibrary(static_cast<HMODULE>(cudaHandle));
         }
 #else
 #error "Platform not supported"
@@ -444,6 +468,14 @@ class NVRTC {
     NVRTC() {
 #ifdef __linux__
         nvrtcHandle = dlopen("libnvrtc.so", RTLD_NOW);
+#elif defined(_WIN32)
+        nvrtcHandle = LoadLibraryA("nvrtc64_12.dll");
+        if (!nvrtcHandle) {
+            nvrtcHandle = LoadLibraryA("nvrtc64_11.dll");
+        }
+        if (!nvrtcHandle) {
+            nvrtcHandle = LoadLibraryA("nvrtc64_10.dll");
+        }
 #else
 #error "Platform not supported"
 #endif
@@ -471,6 +503,10 @@ class NVRTC {
 #ifdef __linux__
         if (nvrtcHandle) {
             dlclose(nvrtcHandle);
+        }
+#elif defined(_WIN32)
+        if (nvrtcHandle) {
+            FreeLibrary(static_cast<HMODULE>(nvrtcHandle));
         }
 #else
 #error "Platform not supported"

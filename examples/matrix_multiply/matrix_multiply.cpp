@@ -1,4 +1,4 @@
-#include "../../gpuLite.hpp"
+#include "../../gpulite.hpp"
 #include <iostream>
 #include <vector>
 #include <random>

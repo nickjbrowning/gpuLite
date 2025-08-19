@@ -11,7 +11,11 @@ add_executable(templated_kernels templated_kernels.cpp)
 target_include_directories(templated_kernels PRIVATE ../..)
 
 # Link required system libraries
-target_link_libraries(templated_kernels PRIVATE ${CMAKE_DL_LIBS})
+if(WIN32)
+    # Windows doesn't need explicit dynamic loading libraries
+else()
+    target_link_libraries(templated_kernels PRIVATE ${CMAKE_DL_LIBS})
+endif()
 
 # Set output directory
 set_target_properties(templated_kernels PROPERTIES
