@@ -1,4 +1,4 @@
-// gpuLite - Combined Header
+// gpu-lite - Combined Header
 // A lightweight C++ library for dynamic CUDA runtime compilation and kernel caching
 #ifndef GPULITE_HPP
 #define GPULITE_HPP

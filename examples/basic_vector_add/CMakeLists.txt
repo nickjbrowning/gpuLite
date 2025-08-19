@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Add executable
 add_executable(vector_add vector_add.cpp)
 
-# Include gpuLite headers (assuming examples are in gpuLite/examples/)
+# Include gpu-lite headers (assuming examples are in gpu-lite/examples/)
 target_include_directories(vector_add PRIVATE ../..)
 
 # Link required system libraries

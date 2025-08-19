@@ -1,8 +1,8 @@
 #!/bin/bash
-# Linux build script for gpuLite examples
+# Linux build script for gpu-lite examples
 # Requires GCC 7+ or Clang 5+ with C++17 support
 
-echo "Building gpuLite examples for Linux..."
+echo "Building gpu-lite examples for Linux..."
 
 # Change to root directory (assuming script is in scripts/ folder)
 cd "$(dirname "$0")/.."

@@ -1,9 +1,9 @@
 @echo off
-REM Windows build script for gpuLite examples
+REM Windows build script for gpu-lite examples
 REM Requires Visual Studio with C++17 support
-REM Run this script from the gpuLite root directory
+REM Run this script from the gpu-lite root directory
 
-echo Building gpuLite examples for Windows...
+echo Building gpu-lite examples for Windows...
 
 REM Change to root directory (assuming script is in scripts/ folder)
 cd /d "%~dp0.."

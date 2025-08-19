@@ -1,6 +1,6 @@
-# gpuLite
+# gpu-lite
 
-A lightweight C++ library for dynamic CUDA runtime compilation and kernel caching. gpuLite simplifies building and deploying CUDA-dependent applications by providing runtime symbol resolution and automated kernel compilation with caching.
+A lightweight C++ library for dynamic CUDA runtime compilation and kernel caching. gpu-lite simplifies building and deploying CUDA-dependent applications by providing runtime symbol resolution and automated kernel compilation with caching.
 
 **🚀 No CUDA SDK Required at Build Time!** - Compile your applications without installing the CUDA SDK.
 
@@ -13,9 +13,9 @@ A lightweight C++ library for dynamic CUDA runtime compilation and kernel cachin
 - **Easy Integration**: Header-only design for simple project integration
 - **Cross-Platform Support**: Supports Linux and Windows platforms
 
-## Why gpuLite?
+## Why gpu-lite?
 
-Traditional CUDA applications require the CUDA SDK to be installed at build time and often have complex deployment requirements. gpuLite solves this by:
+Traditional CUDA applications require the CUDA SDK to be installed at build time and often have complex deployment requirements. gpu-lite solves this by:
 
 1. **Eliminating build-time CUDA dependencies** - No need for CUDA SDK during compilation
 2. **Simplifying deployment** - Applications can run on any system with CUDA drivers installed
@@ -27,7 +27,7 @@ Traditional CUDA applications require the CUDA SDK to be installed at build time
 ### Basic Usage
 
 ```cpp
-#include "gpuLite.hpp"
+#include "gpulite.hpp"
 
 int main() {
     // Check if CUDA is available
@@ -135,7 +135,7 @@ auto* kernel = factory.create(kernel_name, source, "template_kernel.cu", {});
 
 ### Method 1: Header-Only Integration
 
-Add gpuLite as an include directory to your project:
+Add gpu-lite as an include directory to your project:
 
 ```cmake
 # CMakeLists.txt
@@ -147,45 +147,45 @@ set(CMAKE_CXX_STANDARD 17)
 # Your executable
 add_executable(my_app main.cpp)
 
-# Add gpuLite headers
-target_include_directories(my_app PRIVATE external/gpuLite)
+# Add gpu-lite headers
+target_include_directories(my_app PRIVATE external/gpu-lite)
 
-target_link_libraries(my_app PRIVATE gpuLite)
+target_link_libraries(my_app PRIVATE gpu-lite)
 
-# Link system libraries required by gpuLite
+# Link system libraries required by gpu-lite
 target_link_libraries(my_app PRIVATE ${CMAKE_DL_LIBS})
 ```
 
-Create a simple CMakeLists.txt in the gpuLite directory:
+Create a simple CMakeLists.txt in the gpu-lite directory:
 
 ```cmake
-# gpuLite/CMakeLists.txt
+# gpu-lite/CMakeLists.txt
 cmake_minimum_required(VERSION 3.12)
-project(gpuLite LANGUAGES CXX)
+project(gpu-lite LANGUAGES CXX)
 
 # Create header-only interface library
-add_library(gpuLite INTERFACE)
+add_library(gpu-lite INTERFACE)
 
 # Include directories
-target_include_directories(gpuLite INTERFACE
+target_include_directories(gpu-lite INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     $<INSTALL_INTERFACE:include>
 )
 
 # C++17 requirement
-target_compile_features(gpuLite INTERFACE cxx_std_17)
+target_compile_features(gpu-lite INTERFACE cxx_std_17)
 
 # System dependencies
 find_package(Threads REQUIRED)
-target_link_libraries(gpuLite INTERFACE 
+target_link_libraries(gpu-lite INTERFACE 
     ${CMAKE_DL_LIBS}
     Threads::Threads
 )
 
 # Installation rules
-install(TARGETS gpuLite EXPORT gpuLiteConfig)
-install(FILES gpuLite.hpp DESTINATION include)
-install(EXPORT gpuLiteConfig DESTINATION lib/cmake/gpuLite)
+install(TARGETS gpu-lite EXPORT gpu-liteConfig)
+install(FILES gpulite.hpp DESTINATION include)
+install(EXPORT gpu-liteConfig DESTINATION lib/cmake/gpu-lite)
 ```
 
 ### Method 2: Manual Integration
@@ -203,7 +203,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(my_app 
     main.cpp
     # Copy this header to your project
-    gpuLite/gpuLite.hpp
+    gpu-lite/gpulite.hpp
 )
 
 # Link required system libraries
@@ -223,15 +223,15 @@ project(MyProject LANGUAGES CXX)
 include(FetchContent)
 
 FetchContent_Declare(
-    gpuLite
-    GIT_REPOSITORY https://github.com/not-bug-is-feature/gpuLite.git
+    gpu-lite
+    GIT_REPOSITORY https://github.com/not-bug-is-feature/gpu-lite.git
     GIT_TAG main
 )
 
-FetchContent_MakeAvailable(gpuLite)
+FetchContent_MakeAvailable(gpu-lite)
 
 add_executable(my_app main.cpp)
-target_link_libraries(my_app PRIVATE gpuLite)
+target_link_libraries(my_app PRIVATE gpu-lite)
 ```
 
 ## Advanced Usage
@@ -284,7 +284,7 @@ CUDART_SAFE_CALL(CUDART_INSTANCE.cudaStreamDestroy(stream));
 
 ## Error Handling
 
-gpuLite provides comprehensive error checking with detailed error messages:
+gpu-lite provides comprehensive error checking with detailed error messages:
 
 ```cpp
 try {
@@ -307,7 +307,7 @@ try {
 - C++17 compatible compiler (GCC 7+, Clang 5+, MSVC 2017+)
 - CMake 3.12 or higher
 - Standard C++ library with threading support
-- **No CUDA SDK installation required** - gpuLite uses minimal type wrappers
+- **No CUDA SDK installation required** - gpu-lite uses minimal type wrappers
 
 ### CUDA Libraries (loaded dynamically at runtime)
 
@@ -343,7 +343,7 @@ try {
 - **First Launch**: Kernels are compiled on first use, which may add initial latency
 - **Subsequent Launches**: Cached kernels launch immediately with minimal overhead
 - **Memory Usage**: Compiled kernels are kept in memory for the application lifetime
-- **Context Switching**: gpuLite automatically handles CUDA context management
+- **Context Switching**: gpu-lite automatically handles CUDA context management
 
 ## Troubleshooting
 
@@ -375,14 +375,14 @@ For convenience, platform-specific build scripts are provided in the `scripts/` 
 ### Linux
 
 ```bash
-# Run from the gpuLite root directory
+# Run from the gpu-lite root directory
 ./scripts/build_examples_linux.sh
 ```
 
 ### Windows
 
 ```batch
-# Run from the gpuLite root directory
+# Run from the gpu-lite root directory
 scripts\build_examples_windows.bat
 ```
 
