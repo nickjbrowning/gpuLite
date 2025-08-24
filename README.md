@@ -2,7 +2,7 @@
 
 A lightweight C++ library for dynamic CUDA runtime compilation and kernel caching. gpu-lite simplifies building and deploying CUDA-dependent applications by providing runtime symbol resolution and automated kernel compilation with caching.
 
-**🚀 No CUDA SDK Required at Build Time!** - Compile your applications without installing the CUDA SDK.
+**No CUDA SDK Required at Build Time!** - Compile your applications without installing the CUDA SDK.
 
 ## Features
 
